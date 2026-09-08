@@ -24,3 +24,4 @@ Este proyecto es una herramienta creada "por y para la comunidad" con fines orga
 *   El código de la interfaz de usuario es de código abierto.
 *   Todo el contenido de los manuales, imágenes, textos y reglas enlazados a través de este índice pertenece a sus respectivos autores, creadores de la comunidad y a las empresas licenciatarias (Wizards of the Coast, Paizo Inc., Nosolorol Ediciones, etc.).
 *   Esta página **no aloja** material protegido por derechos de autor, sino que actúa exclusivamente como un directorio de enlaces que redirige a los usuarios a la plataforma oficial de Nivel20 / Dungeon20 donde se encuentra el contenido público.
+*   Se agradece su apoyo al proyecto.
