@@ -8,9 +8,10 @@ Un catálogo web interactivo y ultrarrápido diseñado para indexar y buscar man
 *   **Filtros Avanzados:** 
     *   Filtra por **Sistema de Juego** (D&D 5e, D&D 2024, D&D 3.5, Pathfinder 2e, El Resurgir del Dragón).
     *   Filtra por **Tipo de Contenido** (Oficial, Homebrew / Fanmade, Campañas, Playtest, etc.).
-*   **Interfaz Oscura (Dark Mode):** Diseño estilizado, inmersivo y cómodo para la vista, inspirado en e-commerces modernos pero adaptado para jugadores de rol.
-*   **Tarjetas Interactivas:** Cada manual presenta una vista previa con su portada, metadatos y un botón de acceso directo a la plataforma original para integrarlo a tus partidas.
-*   **Zero-Dependencies:** Todo el catálogo (estilos, lógica de filtrado y la base de datos de más de 340 manuales) está compilado en un único archivo `index.html` estático, lo que garantiza una velocidad de carga inmediata.
+    *   Filtro interactivo por **Contenido Incluido** (chips con conteos para Clases, Arquetipos, Razas, Subrazas, Trasfondos, Dotes, Conjuros, Bestiario, Equipo, Rasgos) y modo de combinación.
+    *   Opciones de **Ordenación** (orden original, alfabético A–Z o por mayor contenido).
+*   **Tarjetas con Etiquetas y Modal de Detalles:** Visualiza insignias con el desglose de contenido de cada manual y abre una ventana modal con enlaces directos a cada sección en Nivel20.
+*   **Zero-Dependencies:** Todo el catálogo (estilos, lógica de filtrado y la base de datos de manuales) está compilado en un único archivo `index.html` estático, lo que garantiza una velocidad de carga inmediata.
 
 ## 🚀 Cómo usar
 
