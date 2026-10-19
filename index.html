@@ -9,9 +9,10 @@
 <style>
   :root {
     --ml-blue: #3483FA; --ml-blue-dark: #2968C8; --ml-green: #00A650;
-    --bg-page: #0a0a0a; --bg-card: #1c1c1c; --bg-elev: #262626;
+    --bg-page: #0a0a0a; --bg-card: #1c1c1c; --bg-elev: #262626; --bg-drawer: #151515;
     --text-main: #f0f0f0; --text-secondary: #aaaaaa; --text-muted: #777777;
     --border: #333333; --border-highlight: #4f4f4f;
+    --red-brand: #ba1a1a; --red-brand-hover: #d92222;
     --gold: #f5a623; --gold-glow: rgba(245, 166, 35, 0.25);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,19 +21,20 @@
     background: var(--bg-page); color: var(--text-main); line-height: 1.4;
   }
 
-  /* ===== Header ===== */
+  /* ===== Header Topbar ===== */
   header.topbar {
     background: linear-gradient(135deg, #a71414 0%, #3d0505 50%, #0a0a0a 100%);
-    padding: 12px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 10px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
   }
   .logo {
-    font-weight: 800; font-size: 20px; color: #fff; white-space: nowrap;
+    font-weight: 800; font-size: 19px; color: #fff; white-space: nowrap;
     display: flex; align-items: center; gap: 8px; text-decoration: none;
   }
   .logo span.icon { font-size: 22px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
   .searchbar {
-    flex: 1; min-width: 220px; max-width: 460px; margin: 0 auto; display: flex;
+    flex: 1; min-width: 200px; max-width: 440px; margin: 0 auto; display: flex;
     background: rgba(0,0,0,0.55); border-radius: 6px; overflow: hidden;
     border: 1px solid rgba(255,255,255,0.25); transition: border-color 0.2s ease, box-shadow 0.2s ease;
     align-items: center;
@@ -40,71 +42,156 @@
   .searchbar:focus-within { border-color: rgba(255,255,255,0.7); box-shadow: 0 0 8px rgba(255,255,255,0.15); }
   .searchbar input {
     flex: 1; border: none; outline: none; background: transparent;
-    padding: 9px 12px; font-size: 14px; color: #ffffff;
+    padding: 8px 12px; font-size: 13.5px; color: #ffffff;
   }
   .searchbar input::placeholder { color: #888888; }
   .search-clear {
-    background: none; border: none; color: #888; font-size: 15px; cursor: pointer;
+    background: none; border: none; color: #888; font-size: 14px; cursor: pointer;
     padding: 0 10px; display: none; line-height: 1;
   }
   .search-clear:hover { color: #fff; }
 
-  .header-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-  .result-count { font-size: 13px; color: #eee; white-space: nowrap; font-weight: 600; }
-  .view-btn {
+  .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .hdr-btn {
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    color: #fff; border-radius: 4px; padding: 5px 10px; font-size: 12px;
-    cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.15s;
+    color: #fff; border-radius: 5px; padding: 6px 11px; font-size: 12.5px;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+    white-space: nowrap; font-weight: 500;
   }
-  .view-btn:hover { background: rgba(255,255,255,0.2); }
+  .hdr-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+  .hdr-btn.highlight {
+    background: #ba1a1a; border-color: #e02828; color: #ffffff; font-weight: 600;
+  }
+  .hdr-btn.highlight:hover { background: #d92222; }
+  .hdr-btn.has-active {
+    background: rgba(245, 166, 35, 0.2); border-color: var(--gold); color: var(--gold); font-weight: 600;
+  }
+  .hdr-btn .badge-count {
+    background: var(--gold); color: #000; font-size: 10.5px; font-weight: 800;
+    padding: 1px 5px; border-radius: 10px; margin-left: 2px;
+  }
+  .result-count { font-size: 12.5px; color: #ddd; white-space: nowrap; font-weight: 600; margin-left: 4px; }
 
-  /* ===== Filtros ===== */
-  .filters {
-    background: #141414; padding: 12px 20px; display: flex; gap: 10px; flex-wrap: wrap;
-    align-items: center; border-bottom: 1px solid var(--border);
-    position: sticky; top: 58px; z-index: 20; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  /* ===== Barra de Filtros Activos (Compacta debajo del Header) ===== */
+  .active-filters-bar {
+    background: #141414; border-bottom: 1px solid var(--border);
+    padding: 7px 18px; display: none; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 12px; position: sticky; top: 54px; z-index: 25; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
-  .filters label { font-size: 12px; color: var(--text-secondary); margin-right: -4px; }
-  .filters select {
-    padding: 7px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 13px;
-    background: #242424; color: var(--text-main); max-width: 220px; outline: none;
+  .active-filters-bar.visible { display: flex; }
+  .active-filters-label { color: var(--text-secondary); font-weight: 600; margin-right: 2px; }
+  .active-tag {
+    background: #242424; border: 1px solid #444; border-radius: 14px;
+    padding: 2.5px 9px; color: #eee; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; cursor: pointer; transition: all 0.15s;
+  }
+  .active-tag:hover { background: #333; border-color: #666; color: #fff; }
+  .active-tag .tag-x { color: #888; font-weight: bold; }
+  .active-tag:hover .tag-x { color: #ff6b6b; }
+  .clear-all-link {
+    color: var(--ml-blue); background: none; border: none; font-size: 11.5px;
+    cursor: pointer; text-decoration: underline; margin-left: 4px;
+  }
+  .clear-all-link:hover { color: #fff; }
+  .open-drawer-link {
+    margin-left: auto; color: var(--text-secondary); font-size: 11.5px;
+    background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  }
+  .open-drawer-link:hover { color: #fff; }
+
+  /* ===== Cajón Lateral de Filtros (Drawer) ===== */
+  .drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    z-index: 140; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+    backdrop-filter: blur(2px);
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .filter-drawer {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 340px; max-width: 88vw;
+    background: var(--bg-drawer); z-index: 150; box-shadow: 4px 0 25px rgba(0,0,0,0.7);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .filter-drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    padding: 16px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; background: #1a1a1a;
+  }
+  .drawer-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: #fff; }
+  .drawer-close {
+    background: #252525; border: 1px solid var(--border); border-radius: 50%;
+    width: 32px; height: 32px; font-size: 15px; color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .drawer-close:hover { color: #fff; background: #353535; }
+
+  .drawer-body {
+    flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .drawer-section { display: flex; flex-direction: column; gap: 6px; }
+  .drawer-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
+  .drawer-select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 5px;
+    background: #222222; color: var(--text-main); font-size: 13px; outline: none;
     transition: border-color 0.15s;
   }
-  .filters select:focus { border-color: var(--ml-blue); }
+  .drawer-select:focus { border-color: var(--ml-blue); }
 
-  .fav-btn-filter {
-    background: #242424; border: 1px solid var(--border); color: #ccc;
-    padding: 6px 12px; border-radius: 5px; font-size: 12.5px; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+  .drawer-quick-row { display: flex; gap: 8px; align-items: center; }
+  .fav-drawer-btn {
+    flex: 1; background: #222; border: 1px solid var(--border); color: #ccc;
+    padding: 8px 12px; border-radius: 5px; font-size: 12.5px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s;
   }
-  .fav-btn-filter:hover { border-color: var(--gold); color: #fff; }
-  .fav-btn-filter.active {
+  .fav-drawer-btn:hover { border-color: var(--gold); color: #fff; }
+  .fav-drawer-btn.active {
     background: rgba(245, 166, 35, 0.15); border-color: var(--gold); color: var(--gold); font-weight: 600;
   }
 
-  .clear-btn {
-    background: none; border: none; color: var(--ml-blue); font-size: 12.5px;
-    cursor: pointer; padding: 4px 6px; border-radius: 3px;
+  .clear-drawer-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-secondary);
+    padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer; transition: all 0.15s;
   }
-  .clear-btn:hover { text-decoration: underline; color: #fff; }
+  .clear-drawer-btn:hover { border-color: #666; color: #fff; background: #222; }
 
-  .chips {
-    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-    flex-basis: 100%; margin-top: 4px;
+  /* Selector de modo y explicación */
+  .mode-switch-wrap {
+    background: #1e1e1e; border: 1px solid var(--border); border-radius: 6px; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
   }
-  .chips .chips-title { font-size: 12px; color: var(--text-secondary); margin-right: 2px; }
+  .mode-switch-title { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+  .mode-switch-pills { display: flex; border-radius: 5px; overflow: hidden; border: 1px solid #333; background: #111; }
+  .mode-pill {
+    flex: 1; padding: 6px 4px; text-align: center; font-size: 11.5px; font-weight: 600;
+    cursor: pointer; background: transparent; border: none; color: #888; transition: all 0.15s;
+  }
+  .mode-pill.active { background: #ba1a1a; color: #fff; }
+  .mode-help-text { font-size: 11px; color: var(--text-muted); line-height: 1.35; }
+
+  /* Chips dentro del drawer */
+  .drawer-chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip {
-    font-size: 12px; padding: 4px 10px; border-radius: 18px; cursor: pointer;
+    font-size: 11.5px; padding: 4.5px 9px; border-radius: 16px; cursor: pointer;
     background: #222222; border: 1px solid var(--border); color: var(--text-secondary);
-    user-select: none; transition: all 0.15s ease; white-space: nowrap;
+    user-select: none; transition: all 0.15s ease; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;
   }
   .chip:hover { border-color: #555; color: #fff; }
   .chip.active { background: #ba1a1a; border-color: #e02828; color: #ffffff; font-weight: 600; }
-  .mode-toggle {
-    font-size: 11.5px; color: var(--text-muted); cursor: pointer; background: none;
-    border: none; margin-left: auto; text-decoration: underline;
+  .chip .chip-num { font-size: 10px; opacity: 0.8; }
+
+  .drawer-footer {
+    padding: 14px 18px; border-top: 1px solid var(--border); background: #1a1a1a;
+    display: flex; gap: 10px;
   }
-  .mode-toggle:hover { color: var(--text-secondary); }
+  .apply-drawer-btn {
+    flex: 1; background: #ba1a1a; color: #fff; border: none; padding: 9px 14px;
+    border-radius: 5px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    text-align: center;
+  }
+  .apply-drawer-btn:hover { background: #d92222; }
 
   /* ===== Grid de manuales ===== */
   main { padding: 20px; min-height: 80vh; max-width: 1600px; margin: 0 auto; }
@@ -182,6 +269,14 @@
     background: #242424; border: 1px solid var(--border); color: var(--text-secondary);
   }
   .mini-chip.more { color: var(--ml-blue); border-color: var(--ml-blue); }
+
+  /* Resaltado de coincidencia de búsqueda */
+  .card-snippet {
+    font-size: 11px; background: rgba(52, 131, 250, 0.12); color: #7cb5ff;
+    border: 1px solid rgba(52, 131, 250, 0.25); border-radius: 4px; padding: 3px 6px;
+    margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
   .card-footer {
     margin-top: auto; padding-top: 8px; font-size: 12px; color: var(--ml-blue);
     font-weight: 600; display: flex; align-items: center; gap: 4px;
@@ -203,7 +298,6 @@
   .grid.list-view .badge-tipo { font-size: 8.5px; padding: 1.5px 5px; top: 4px; left: 4px; }
   .grid.list-view .badge-wip { display: none; }
 
-  /* Contenido en fila con columnas limpias */
   .grid.list-view .card-body {
     padding: 0; display: flex; flex-direction: row; align-items: center;
     gap: 16px; flex: 1; min-width: 0;
@@ -218,52 +312,54 @@
     font-size: 12px; color: var(--text-secondary);
     width: 110px; min-width: 90px; flex-shrink: 0;
   }
+  .grid.list-view .card-snippet { max-width: 260px; -webkit-line-clamp: 1; margin: 0; }
   .grid.list-view .card-chips {
     margin: 0; gap: 4px; display: flex; flex-wrap: nowrap; overflow: hidden; flex: 1;
   }
   .grid.list-view .mini-chip { font-size: 10.5px; padding: 2px 7px; white-space: nowrap; }
   .grid.list-view .card-footer { display: none; }
 
-  /* Botón de favorito: limpio a la derecha de la fila, sin tocar la imagen */
   .grid.list-view .card-fav-btn {
     position: static; margin-left: auto; width: 34px; height: 34px; min-width: 34px;
     flex-shrink: 0; align-self: center;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 950px) {
     .grid.list-view .card-chips { display: none; }
     .grid.list-view .card-juego { width: 90px; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 650px) {
+    .grid.list-view .card-snippet { display: none; }
     .grid.list-view .card-juego { display: none; }
     .grid.list-view .card-img-wrap { width: 64px; min-width: 64px; height: 64px; }
     .grid.list-view .card { height: 64px; min-height: 64px; gap: 10px; padding-right: 10px; }
-    .grid.list-view .card-title { font-size: 13.5px; width: 100%; }
+    .grid.list-view .card-title { font-size: 13px; width: 100%; }
   }
 
   .empty-state { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
   .empty-state .big { font-size: 48px; margin-bottom: 12px; }
 
-  /* ===== Modal ===== */
+  /* ===== Modales Genéricos ===== */
   .overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-    z-index: 100; align-items: flex-start; justify-content: center;
-    overflow-y: auto; padding: 36px 16px; backdrop-filter: blur(3px);
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+    z-index: 120; align-items: flex-start; justify-content: center;
+    overflow-y: auto; padding: 36px 16px; backdrop-filter: blur(4px);
   }
   .overlay.open { display: flex; }
   .modal {
     background: var(--bg-card); border-radius: 10px; max-width: 720px; width: 100%;
-    overflow: hidden; box-shadow: 0 16px 50px rgba(0,0,0,0.6); border: 1px solid var(--border);
+    overflow: hidden; box-shadow: 0 16px 50px rgba(0,0,0,0.7); border: 1px solid var(--border);
+    position: relative;
   }
-  .modal-wrap { position: relative; }
   .modal-close {
     position: absolute; top: 14px; right: 14px; background: #282828; border: 1px solid var(--border);
     border-radius: 50%; width: 32px; height: 32px; font-size: 15px; cursor: pointer;
-    color: var(--text-secondary); z-index: 5; display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); z-index: 10; display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
   }
   .modal-close:hover { color: #fff; background: #383838; }
 
+  /* Modal Manual */
   .modal-top { display: flex; gap: 20px; padding: 22px; border-bottom: 1px solid var(--border); background: #161616; }
   .modal-img { width: 140px; min-width: 140px; height: 180px; border-radius: 6px; object-fit: cover; background: #222; }
   .modal-img-empty {
@@ -286,14 +382,16 @@
     background: #f5a623; color: #111111; border-color: #f5a623;
     font-weight: 700; box-shadow: 0 0 12px rgba(245, 166, 35, 0.5);
   }
-  .modal-btn.active-fav:hover {
-    background: #ffb74d; color: #000; border-color: #ffb74d;
-  }
 
   .modal-body { padding: 20px 24px 28px; }
   .field-row { display: flex; gap: 8px; font-size: 13.5px; padding: 6px 0; border-bottom: 1px solid #282828; }
   .field-row .k { color: var(--text-secondary); min-width: 130px; font-weight: 600; }
-  .field-row .v { color: var(--text-main); }
+  .field-row .v { color: var(--text-main); flex: 1; }
+  .author-filter-link {
+    color: var(--ml-blue); text-decoration: none; margin-left: 8px; font-size: 12px;
+    background: rgba(52, 131, 250, 0.12); padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(52, 131, 250, 0.3);
+  }
+  .author-filter-link:hover { background: var(--ml-blue); color: #fff; }
 
   .modal-desc { margin-top: 16px; font-size: 13.5px; line-height: 1.6; color: #dedede; }
   .modal-desc a { color: var(--ml-blue); text-decoration: underline; font-weight: 500; }
@@ -353,6 +451,61 @@
   }
   .modal-link-btn:hover { background: #d92222; }
 
+  /* ===== Modal Guía y Versiones ===== */
+  .guide-tabs {
+    display: flex; border-bottom: 1px solid var(--border); background: #161616; padding: 0 20px;
+  }
+  .guide-tab {
+    padding: 14px 18px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
+    background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s;
+  }
+  .guide-tab:hover { color: #fff; }
+  .guide-tab.active { color: #fff; border-bottom-color: var(--red-brand); }
+
+  .guide-content-area { padding: 24px; max-height: 72vh; overflow-y: auto; }
+  .guide-section { margin-bottom: 24px; }
+  .guide-section h3 { font-size: 16px; margin-bottom: 8px; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .guide-section p { font-size: 13.5px; color: #ccc; line-height: 1.6; margin-bottom: 8px; }
+  .guide-box {
+    background: #181818; border-left: 3px solid var(--red-brand); padding: 10px 14px;
+    border-radius: 0 6px 6px 0; font-size: 13px; color: #ddd; margin: 10px 0;
+  }
+  .guide-box.highlight { border-left-color: var(--gold); background: #1e1b12; color: #f2e3be; }
+
+  /* Changelog timeline */
+  .timeline { display: flex; flex-direction: column; gap: 18px; position: relative; padding-left: 18px; border-left: 2px solid #333; margin-left: 8px; }
+  .tl-entry { position: relative; }
+  .tl-entry::before {
+    content: ''; position: absolute; left: -24px; top: 4px; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--red-brand); border: 2px solid #1c1c1c;
+  }
+  .tl-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tl-ver { font-size: 15px; font-weight: 700; color: #fff; }
+  .tl-date { font-size: 12px; color: var(--text-muted); background: #262626; padding: 1px 7px; border-radius: 4px; }
+  .tl-title { font-size: 13.5px; font-weight: 600; color: var(--gold); margin-bottom: 6px; }
+  .tl-desc { font-size: 13px; color: #ccc; line-height: 1.5; }
+  .tl-desc ul { margin-left: 18px; margin-top: 4px; }
+  .tl-desc li { margin-bottom: 3px; }
+
+  /* ===== Modal Estadísticas ===== */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    background: #181818; border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; text-align: center;
+  }
+  .stat-val { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .stat-val.gold { color: var(--gold); }
+  .stat-lbl { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .stat-bar-group { margin-bottom: 16px; }
+  .stat-bar-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #eee; }
+  .stat-bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; margin-bottom: 5px; }
+  .stat-bar-name { width: 150px; min-width: 150px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stat-bar-track { flex: 1; height: 10px; background: #252525; border-radius: 5px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; background: var(--red-brand); border-radius: 5px; }
+  .stat-bar-fill.blue { background: var(--ml-blue); }
+  .stat-bar-count { width: 45px; text-align: right; color: #fff; font-weight: 600; }
+
   /* ===== Botón Volver Arriba ===== */
   .scroll-top-btn {
     position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px;
@@ -376,46 +529,107 @@
 </head>
 <body>
 
+<!-- Topbar Header -->
 <header class="topbar">
-  <a href="#" class="logo" id="logoLink">
+  <a href="#" class="logo" id="logoLink" title="Ir al inicio / resetear filtros">
     <span class="icon">🎲</span> Manuales de Juego
   </a>
   <div class="searchbar">
-    <input type="text" id="searchInput" placeholder="Buscar por título, autor, creador o contenido..." autocomplete="off">
+    <input type="text" id="searchInput" placeholder="Buscar título, creador, autor o contenido..." autocomplete="off">
     <button class="search-clear" id="searchClear" title="Limpiar búsqueda">✕</button>
   </div>
   <div class="header-actions">
+    <button class="hdr-btn" id="openDrawerBtn" title="Abrir cajón de filtros avanzados">
+      ⚡ Filtros <span class="badge-count" id="activeFilterBadge" style="display:none;">0</span>
+    </button>
+    <button class="hdr-btn" id="randomBookBtn" title="Inspiración D20: abrir un manual aleatorio">
+      🎲 Al azar
+    </button>
+    <button class="hdr-btn" id="openStatsBtn" title="Ver métricas y estadísticas del compendio">
+      📊 Estadísticas
+    </button>
+    <button class="hdr-btn highlight" id="openGuideBtn" title="Guía de uso y notas de versión">
+      📖 Guía y Versiones
+    </button>
+    <button class="hdr-btn" id="viewToggleBtn" title="Alternar entre cuadrícula y lista">
+      ☰ Lista
+    </button>
     <div class="result-count" id="resultCount">0 manuales</div>
-    <button class="view-btn" id="viewToggleBtn" title="Alternar entre cuadrícula y lista">☰ Lista</button>
   </div>
 </header>
 
-<div class="filters">
-  <label for="filterJuego">Juego</label>
-  <select id="filterJuego"></select>
-
-  <label for="filterTipo">Tipo</label>
-  <select id="filterTipo"></select>
-
-  <label for="sortSel">Ordenar</label>
-  <select id="sortSel">
-    <option value="orig">Orden original</option>
-    <option value="nombre">Nombre A–Z</option>
-    <option value="cantidad">Más contenido</option>
-  </select>
-
-  <button class="fav-btn-filter" id="favFilterBtn">
-    ⭐ Favoritos (<span id="favFilterCount">0</span>)
-  </button>
-
-  <button class="clear-btn" id="clearFilters">Limpiar filtros</button>
-
-  <div class="chips" id="contentChips">
-    <span class="chips-title">Incluye:</span>
-  </div>
-  <button class="mode-toggle" id="modeToggle" title="Cambiar modo de combinación de filtros">modo: cualquiera ☑</button>
+<!-- Barra compacta de filtros activos (debajo del header) -->
+<div class="active-filters-bar" id="activeFiltersBar">
+  <span class="active-filters-label">Filtros activos:</span>
+  <div id="activeTagsContainer" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;"></div>
+  <button class="clear-all-link" id="clearAllBarBtn">Limpiar todo</button>
+  <button class="open-drawer-link" id="barDrawerLink">Modificar filtros ⚙️</button>
 </div>
 
+<!-- Cajón Lateral de Filtros (Drawer) -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="filter-drawer" id="filterDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">⚡ Filtros y Búsqueda</div>
+    <button class="drawer-close" id="drawerClose" title="Cerrar cajón">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-quick-row">
+      <button class="fav-drawer-btn" id="favFilterBtn">
+        ⭐ Solo Favoritos (<span id="favFilterCount">0</span>)
+      </button>
+      <button class="clear-drawer-btn" id="clearFiltersBtn" title="Limpiar todos los filtros">
+        🔄 Limpiar
+      </button>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label" for="filterJuego">Sistema / Juego</label>
+      <select class="drawer-select" id="filterJuego"></select>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label" for="filterTipo">Tipo de Publicación</label>
+      <select class="drawer-select" id="filterTipo"></select>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label" for="filterCreador">Creador / Autor</label>
+      <select class="drawer-select" id="filterCreador"></select>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label" for="sortSel">Ordenar Resultados</label>
+      <select class="drawer-select" id="sortSel">
+        <option value="orig">Orden original del catálogo</option>
+        <option value="nombre">Nombre A–Z</option>
+        <option value="cantidad">Mayor cantidad de contenido</option>
+      </select>
+    </div>
+
+    <!-- Sección de Modo de Coincidencia -->
+    <div class="mode-switch-wrap">
+      <div class="mode-switch-title">Modo de combinación de contenidos:</div>
+      <div class="mode-switch-pills">
+        <button class="mode-pill active" id="modeOrBtn" type="button">Al menos uno (OR)</button>
+        <button class="mode-pill" id="modeAndBtn" type="button">Todos (AND)</button>
+      </div>
+      <div class="mode-help-text" id="modeHelpText">
+        Muestra manuales que incluyan <strong>al menos una</strong> de las etiquetas seleccionadas.
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label">Contenido Incluido</label>
+      <div class="drawer-chips" id="contentChips"></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="apply-drawer-btn" id="applyDrawerBtn">Aplicar y Ver Resultados</button>
+  </div>
+</aside>
+
+<!-- Contenedor Principal de Manuales -->
 <main>
   <div class="grid" id="grid"></div>
   <div class="empty-state" id="emptyState" style="display:none;">
@@ -427,49 +641,247 @@
 <button class="scroll-top-btn" id="scrollTopBtn" title="Volver arriba">▲</button>
 <div class="toast" id="toast">¡Enlace copiado al portapapeles!</div>
 
-<!-- Modal -->
+<!-- Modal Detalle del Manual -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-wrap">
-      <button class="modal-close" id="modalClose">✕</button>
-      <div class="modal-top">
-        <div id="modalImgWrap"></div>
-        <div class="modal-headinfo">
-          <h2 id="modalTitle"></h2>
-          <div class="modal-badges-row">
-            <span id="modalBadge"></span>
-            <span id="modalWipBadge" style="display:none;" class="badge-wip">🚧 En Construcción / WIP</span>
-          </div>
-          <div class="modal-actions-bar">
-            <button class="modal-btn" id="modalFavBtn">⭐ Guardar en favoritos</button>
-            <button class="modal-btn" id="modalShareBtn">📋 Copiar enlace</button>
-          </div>
+    <button class="modal-close" id="modalClose" title="Cerrar ventana">✕</button>
+    <div class="modal-top">
+      <div id="modalImgWrap"></div>
+      <div class="modal-headinfo">
+        <h2 id="modalTitle"></h2>
+        <div class="modal-badges-row">
+          <span id="modalBadge"></span>
+          <span id="modalWipBadge" style="display:none;" class="badge-wip">🚧 En Construcción / WIP</span>
+        </div>
+        <div class="modal-actions-bar">
+          <button class="modal-btn" id="modalFavBtn">⭐ Guardar en favoritos</button>
+          <button class="modal-btn" id="modalShareBtn">📋 Copiar enlace</button>
         </div>
       </div>
-      <div class="modal-body">
-        <div id="modalFields"></div>
+    </div>
+    <div class="modal-body">
+      <div id="modalFields"></div>
 
-        <div class="extra-links-section" id="modalExtraLinksWrap" style="display:none;">
-          <h4>🔗 Manuales y Enlaces Relacionados</h4>
-          <div class="extra-links-hint">Mencionados en este libro para complementar tus partidas:</div>
-          <div id="modalExtraLinks" class="extra-links-list"></div>
+      <div class="extra-links-section" id="modalExtraLinksWrap" style="display:none;">
+        <h4>🔗 Manuales y Enlaces Relacionados</h4>
+        <div class="extra-links-hint">Mencionados en este libro para complementar tus partidas:</div>
+        <div id="modalExtraLinks" class="extra-links-list"></div>
+      </div>
+
+      <div class="modal-desc" id="modalDescWrap" style="display:none;">
+        <div id="modalDesc"></div>
+      </div>
+
+      <div class="cont-section" id="modalContWrap" style="display:none;">
+        <h4>📚 Contenido incluido</h4>
+        <div class="cont-hint">Toca el nombre de cada sección para abrir el listado en Nivel20.</div>
+        <div id="modalCont"></div>
+      </div>
+
+      <div class="modal-footer">
+        <a href="#" target="_blank" rel="noopener" class="modal-link-btn" id="modalLink">
+          Ver manual completo en Nivel20 →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Guía y Versiones -->
+<div class="overlay" id="guideOverlay">
+  <div class="modal" style="max-width: 820px;">
+    <button class="modal-close" id="guideClose" title="Cerrar ventana">✕</button>
+    <div class="guide-tabs">
+      <button class="guide-tab active" id="tabGuideBtn">📖 Guía de Funcionalidades</button>
+      <button class="guide-tab" id="tabChangelogBtn">📜 Notas de Versión (Changelog)</button>
+    </div>
+    <div class="guide-content-area">
+      <!-- Pestaña 1: Guía de uso -->
+      <div id="tabGuideContent">
+        <div class="guide-section">
+          <h3>🔍 Búsqueda Global Inteligente</h3>
+          <p>La barra superior te permite buscar al instante en más de 320 manuales. No solo busca por el título del libro, sino también por el nombre del creador, el autor en Discord y hasta el contenido interno específico (por ejemplo, escribe <em>vampiro</em> o <em>paladín</em> y te mostrará qué manuales lo incluyen en su desglose).</p>
         </div>
 
-        <div class="modal-desc" id="modalDescWrap" style="display:none;">
-          <div id="modalDesc"></div>
+        <div class="guide-section">
+          <h3>⚡ Cajón Lateral de Filtros</h3>
+          <p>Pulsa el botón <strong>⚡ Filtros</strong> en el encabezado para desplegar el menú lateral retráctil. Esto deja la pantalla completamente despejada para disfrutar de las portadas. En el cajón puedes filtrar por:</p>
+          <ul>
+            <li><strong>Sistema / Juego:</strong> D&D 5e, D&D (2024), El Resurgir del Dragón, Pathfinder 2e, D&D 3.5.</li>
+            <li><strong>Tipo de publicación:</strong> Oficial, Homebrew / Fanmade, Campaña / Aventura, Contenido de terceros, Playtest.</li>
+            <li><strong>Creador / Autor:</strong> Filtra por autores específicos como Wizards of the Coast, Dungeon20, Darko Brevic, Guxfel, Wildlyon, etc.</li>
+            <li><strong>Etiquetas de Contenido:</strong> Clases, Arquetipos, Bestiario, Conjuros, Dotes, Razas, Equipo, etc.</li>
+          </ul>
         </div>
 
-        <div class="cont-section" id="modalContWrap" style="display:none;">
-          <h4>📚 Contenido incluido</h4>
-          <div class="cont-hint">Toca el nombre de cada sección para abrir el listado en Nivel20.</div>
-          <div id="modalCont"></div>
+        <div class="guide-section">
+          <h3>🔀 ¿Qué es el "Modo: Cualquiera" vs "Modo: Todos"?</h3>
+          <p>Cuando seleccionas más de una etiqueta de contenido en los filtros (por ejemplo, <em>✨ Conjuros</em> y <em>🐉 Bestiario</em>), el selector de combinación define cómo se realiza la búsqueda:</p>
+          <div class="guide-box">
+            <strong>🔘 Al menos uno (OR) — [Modo Cualquiera]:</strong> Muestra manuales que tengan <em>al menos una</em> de las etiquetas marcadas. Verás libros que tengan sólo conjuros, libros que tengan sólo monstruos, y también aquellos que tengan ambos. Es el modo más flexible para explorar.
+          </div>
+          <div class="guide-box highlight">
+            <strong>🔘 Todos (AND) — [Modo Estricto]:</strong> Muestra <em>únicamente</em> aquellos manuales que contengan obligatoriamente <strong>TODAS</strong> las etiquetas seleccionadas a la vez. Es ideal cuando buscas un suplemento muy completo que requiera simultáneamente clases, hechizos y bestiario.
+          </div>
         </div>
 
-        <div class="modal-footer">
-          <a href="#" target="_blank" rel="noopener" class="modal-link-btn" id="modalLink">
-            Ver manual completo en Nivel20 →
-          </a>
+        <div class="guide-section">
+          <h3>⭐ Sistema de Favoritos Personal</h3>
+          <p>Haz clic en la estrella de cualquier manual para guardarlo en tu lista personal. Los favoritos se almacenan de forma segura en la memoria de tu propio navegador (LocalStorage), sin requerir inicio de sesión. Puedes activar el filtro <em>⭐ Solo Favoritos</em> para ver tu biblioteca personalizada en cualquier momento.</p>
         </div>
+
+        <div class="guide-section">
+          <h3>🎲 Inspiración D20 (Manual al Azar)</h3>
+          <p>¿No sabes qué dirigir o qué leer? Pulsa el botón <strong>🎲 Al azar</strong> en la barra superior. El sistema elegirá un manual aleatorio de entre los resultados que tengas filtrados en ese momento y abrirá su ficha al instante.</p>
+        </div>
+
+        <div class="guide-section">
+          <h3>🔗 Compartir Fichas y Packs</h3>
+          <p>Cada manual cuenta con un enlace único e intransferible. Al pulsar <strong>📋 Copiar enlace</strong> dentro de cualquier manual, obtendrás una URL como <code>#manual=Ravenloft...</code> que puedes pegar en Discord o WhatsApp para que tus jugadores o amigos abran exactamente ese manual.</p>
+        </div>
+
+        <div class="guide-section">
+          <h3>📱 Modo Offline y Aplicación Web (PWA)</h3>
+          <p>Este compendio funciona como una Progressive Web App. Puedes instalarlo en la pantalla de inicio de tu teléfono (Android o iOS) o como aplicación de escritorio en PC, permitiéndote consultar los manuales con carga ultrarrápida y soporte sin conexión.</p>
+        </div>
+      </div>
+
+      <!-- Pestaña 2: Notas de Versión -->
+      <div id="tabChangelogContent" style="display:none;">
+        <div class="timeline">
+
+          <div class="tl-entry">
+            <div class="tl-head">
+              <span class="tl-ver">Versión 2.3.0</span>
+              <span class="tl-date">19 de Octubre de 2026</span>
+            </div>
+            <div class="tl-title">Cajón Lateral de Filtros, Guía Interactiva, Selector Intuitivo y Analítica</div>
+            <div class="tl-desc">
+              <ul>
+                <li><strong>Cajón Lateral Retráctil:</strong> Se reorganizaron todos los filtros en un cajón lateral deslizante que maximiza el espacio vertical en pantalla y oculta los controles durante la lectura.</li>
+                <li><strong>Ventana de Guía y Notas de Versión:</strong> Nuevo botón principal que abre esta ventana con explicaciones detalladas y registro histórico de cambios.</li>
+                <li><strong>Selector Intuitivo de Combinación:</strong> Se reemplazó el texto confuso <em>"modo: cualquiera"</em> por un selector visual con dos opciones claras: <em>"Al menos uno (OR)"</em> y <em>"Todos (AND)"</em> con textos explicativos dinámicos.</li>
+                <li><strong>Filtro Dinámico por Creador/Autor:</strong> Selector automático para explorar manuales por creador o autor.</li>
+                <li><strong>Botón "Al azar" (Inspiración D20):</strong> Selección aleatoria de manuales entre los resultados visibles.</li>
+                <li><strong>Dashboard de Estadísticas Globales:</strong> Panel analítico con desglose de libros, juegos, tipos y contenidos totales.</li>
+                <li><strong>Resaltado de Coincidencias Internas:</strong> Las tarjetas ahora muestran qué elemento interno coincidió con la búsqueda (ej: monstruo o conjuro encontrado).</li>
+                <li><strong>Barra de Filtros Activos:</strong> Franja minimalista bajo el encabezado con etiquetas descartables de filtros activos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-entry">
+            <div class="tl-head">
+              <span class="tl-ver">Versión 2.2.0</span>
+              <span class="tl-date">19 de Octubre de 2026</span>
+            </div>
+            <div class="tl-title">Auditoría 100% en Nivel20, Portadas Canónicas y Rediseño de Favoritos</div>
+            <div class="tl-desc">
+              <ul>
+                <li><strong>Auditoría exhaustiva de 326 manuales:</strong> Comprobación directa contra Nivel20. 0 enlaces rotos (100% operativos).</li>
+                <li><strong>107 portadas canónicas:</strong> Actualización a imágenes de alta resolución desde los servidores canónicos de Nivel20.</li>
+                <li><strong>68 títulos actualizados:</strong> Corrección de nombres oficiales y sufijos.</li>
+                <li><strong>18 enlaces y manuales cruzados:</strong> Indexación de suplementos relacionados en descripciones.</li>
+                <li><strong>Estrellas SVG doradas:</strong> Distinción clara y brillante entre manuales favoritos y no favoritos.</li>
+                <li><strong>Rediseño en Vista Lista:</strong> Botón de favorito alineado a la derecha sin solapamiento con la portada.</li>
+                <li><strong>Service Worker Network-First:</strong> Se solucionó el problema de caché persistente para recibir siempre la versión más reciente.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-entry">
+            <div class="tl-head">
+              <span class="tl-ver">Versión 2.1.0</span>
+              <span class="tl-date">18 de Octubre de 2026</span>
+            </div>
+            <div class="tl-title">Soporte PWA Offline, Modo Lista y Enlaces Directos</div>
+            <div class="tl-desc">
+              <ul>
+                <li><strong>Progressive Web App:</strong> Adición de Service Worker y manifiesto web para navegación sin internet e instalación en dispositivos.</li>
+                <li><strong>Vista en Lista:</strong> Alternancia rápida entre visualización en tarjetas cuadradas y lista compacta de alta densidad.</li>
+                <li><strong>Deep Linking (#manual=...):</strong> Capacidad de compartir cualquier manual con enlace directo y copiado rápido al portapapeles.</li>
+                <li><strong>Botón Volver Arriba:</strong> Botón flotante para retorno suave a la parte superior de la página.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-entry">
+            <div class="tl-head">
+              <span class="tl-ver">Versión 2.0.0</span>
+              <span class="tl-date">17 de Octubre de 2026</span>
+            </div>
+            <div class="tl-title">Rediseño Moderno en Modo Oscuro y Desglose de Contenidos</div>
+            <div class="tl-desc">
+              <ul>
+                <li><strong>Tema oscuro inmersivo:</strong> Paleta en negro grafito y rojo carmesí diseñada para largas sesiones de rol.</li>
+                <li><strong>Ficha modal detallada:</strong> Desglose completo de clases, razas, dotes, conjuros y bestiario con enlace a Nivel20.</li>
+                <li><strong>Identificación WIP:</strong> Insignia distintiva para manuales en fase de desarrollo o incompletos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-entry">
+            <div class="tl-head">
+              <span class="tl-ver">Versión 1.0.0</span>
+              <span class="tl-date">Versión Inicial</span>
+            </div>
+            <div class="tl-title">Compendio Base de Manuales Nivel20</div>
+            <div class="tl-desc">
+              <ul>
+                <li>Catálogo inicial de manuales y libros de reglas enlazados a la plataforma Nivel20 / Dungeon20.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Estadísticas -->
+<div class="overlay" id="statsOverlay">
+  <div class="modal" style="max-width: 680px;">
+    <button class="modal-close" id="statsClose" title="Cerrar ventana">✕</button>
+    <div class="modal-top" style="background:#181818;">
+      <div class="modal-headinfo">
+        <h2 style="margin-bottom:4px;">📊 Estadísticas Globales del Compendio</h2>
+        <div style="font-size:12.5px; color:var(--text-secondary);">Métricas de la biblioteca de manuales auditada al 100%</div>
+      </div>
+    </div>
+    <div class="modal-body" id="statsModalBody">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val gold" id="statTotalBooks">326</div>
+          <div class="stat-lbl">Manuales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statTotalMonsters">8.563</div>
+          <div class="stat-lbl">Monstruos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statTotalSpells">7.059</div>
+          <div class="stat-lbl">Conjuros</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statTotalFavs">0</div>
+          <div class="stat-lbl">Tus Favoritos</div>
+        </div>
+      </div>
+
+      <div class="stat-bar-group">
+        <div class="stat-bar-title">Distribución por Sistema de Juego</div>
+        <div id="statGamesBars"></div>
+      </div>
+
+      <div class="stat-bar-group">
+        <div class="stat-bar-title">Distribución por Tipo de Publicación</div>
+        <div id="statTypesBars"></div>
+      </div>
+
+      <div class="stat-bar-group" style="margin-bottom:0;">
+        <div class="stat-bar-title">Top Creadores y Editoriales</div>
+        <div id="statCreatorsBars"></div>
       </div>
     </div>
   </div>
@@ -547,7 +959,7 @@ function toggleFavorite(nombre, e) {
   if (favorites.has(nombre)) favorites.delete(nombre);
   else favorites.add(nombre);
   saveFavorites();
-  apply(false); // mantener scroll
+  apply(false);
   updateModalFavBtn(nombre);
 }
 
@@ -561,6 +973,8 @@ function favIconSvg(active) {
 function updateFavBadgeCount() {
   const el = document.getElementById('favFilterCount');
   if (el) el.textContent = favorites.size;
+  const statFav = document.getElementById('statTotalFavs');
+  if (statFav) statFav.textContent = favorites.size;
 }
 updateFavBadgeCount();
 
@@ -569,15 +983,20 @@ const state = {
   q: '',
   juego: '',
   tipo: '',
+  creador: '',
   chips: new Set(),
-  matchAll: false,
+  matchAll: false, // false = OR (cualquiera), true = AND (todos)
   sort: 'orig',
   onlyFavs: false,
-  viewMode: 'grid' // 'grid' | 'list'
+  viewMode: 'grid'
 };
 
 function norm(s) {
   return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function cleanName(s) {
+  return (s || '').replace(/\*\*/g, '').trim();
 }
 
 function isWip(nombre) {
@@ -599,22 +1018,44 @@ function esc(s) {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Inicialización de filtros select
+// Inicialización de filtros select en el cajón
 function initFilters() {
   const selJuego = document.getElementById('filterJuego');
   const selTipo = document.getElementById('filterTipo');
+  const selCreador = document.getElementById('filterCreador');
+
   const oldJuego = selJuego.value;
   const oldTipo = selTipo.value;
+  const oldCreador = selCreador.value;
 
+  // Juegos
   const juegos = [...new Set(BOOKS.map(b => b.juego).filter(Boolean))].sort();
   selJuego.innerHTML = '<option value="">Todos los juegos</option>' +
     juegos.map(j => `<option value="${esc(j)}">${esc(j)}</option>`).join('');
   if (oldJuego) selJuego.value = oldJuego;
 
+  // Tipos
   const tipos = [...new Set(BOOKS.map(b => b.tipo).filter(Boolean))].sort();
   selTipo.innerHTML = '<option value="">Todos los tipos</option>' +
     tipos.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
   if (oldTipo) selTipo.value = oldTipo;
+
+  // Creadores / Autores
+  const creatorSet = new Set();
+  BOOKS.forEach(b => {
+    const c1 = cleanName(b.creador);
+    const c2 = cleanName(b.autoria);
+    const c3 = cleanName(b.autor_disc);
+    if (c1 && !c1.toLowerCase().includes('propia') && c1.length > 2) creatorSet.add(c1);
+    if (c2 && !c2.toLowerCase().includes('propia') && c2.length > 2) {
+      c2.split(/[,/y]/).map(x => cleanName(x)).filter(x => x.length > 2).forEach(x => creatorSet.add(x));
+    }
+    if (c3 && c3.length > 2) creatorSet.add(c3);
+  });
+  const creadores = [...creatorSet].sort((a,b) => a.localeCompare(b, 'es'));
+  selCreador.innerHTML = '<option value="">Todos los creadores / autores</option>' +
+    creadores.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  if (oldCreador) selCreador.value = oldCreador;
 
   // Chips con conteos
   const counts = {};
@@ -622,12 +1063,12 @@ function initFilters() {
   BOOKS.forEach(b => (b.cats || []).forEach(c => { if (counts[c] !== undefined) counts[c]++; }));
 
   const chipsContainer = document.getElementById('contentChips');
-  chipsContainer.innerHTML = '<span class="chips-title">Incluye:</span>';
+  chipsContainer.innerHTML = '';
   Object.entries(CATS).forEach(([key, info]) => {
     const chip = document.createElement('div');
     chip.className = 'chip' + (state.chips.has(key) ? ' active' : '');
     chip.dataset.cat = key;
-    chip.textContent = `${info.emoji} ${info.nombre} ${counts[key] || 0}`;
+    chip.innerHTML = `<span>${info.emoji} ${info.nombre}</span> <span class="chip-num">(${counts[key] || 0})</span>`;
     chip.onclick = () => {
       if (state.chips.has(key)) state.chips.delete(key);
       else state.chips.add(key);
@@ -636,12 +1077,15 @@ function initFilters() {
     };
     chipsContainer.appendChild(chip);
   });
+
+  renderStats();
 }
 initFilters();
 
-// Eventos de filtros
+// Eventos de filtros del cajón
 document.getElementById('filterJuego').onchange = e => { state.juego = e.target.value; apply(); };
 document.getElementById('filterTipo').onchange = e => { state.tipo = e.target.value; apply(); };
+document.getElementById('filterCreador').onchange = e => { state.creador = e.target.value; apply(); };
 document.getElementById('sortSel').onchange = e => { state.sort = e.target.value; apply(); };
 
 // Búsqueda con debounce
@@ -664,7 +1108,7 @@ searchClear.onclick = () => {
   searchInput.focus();
 };
 
-// Favoritos botón
+// Favoritos en cajón
 const favFilterBtn = document.getElementById('favFilterBtn');
 favFilterBtn.onclick = () => {
   state.onlyFavs = !state.onlyFavs;
@@ -672,23 +1116,64 @@ favFilterBtn.onclick = () => {
   apply();
 };
 
-// Modo combinación
-const modeToggle = document.getElementById('modeToggle');
-modeToggle.onclick = () => {
-  state.matchAll = !state.matchAll;
-  modeToggle.textContent = state.matchAll ? 'modo: todos ☒' : 'modo: cualquiera ☑';
-  apply();
-};
+// Modo de combinación (OR / AND)
+const modeOrBtn = document.getElementById('modeOrBtn');
+const modeAndBtn = document.getElementById('modeAndBtn');
+const modeHelpText = document.getElementById('modeHelpText');
 
-// Limpiar filtros
-document.getElementById('clearFilters').onclick = () => {
-  state.q = ''; state.juego = ''; state.tipo = ''; state.chips.clear(); state.onlyFavs = false;
+function setMatchMode(isAll) {
+  state.matchAll = isAll;
+  modeOrBtn.classList.toggle('active', !isAll);
+  modeAndBtn.classList.toggle('active', isAll);
+  modeHelpText.innerHTML = isAll
+    ? 'Muestra únicamente manuales que incluyan <strong>TODAS</strong> las etiquetas seleccionadas a la vez.'
+    : 'Muestra manuales que incluyan <strong>al menos una</strong> de las etiquetas seleccionadas.';
+  apply();
+}
+modeOrBtn.onclick = () => setMatchMode(false);
+modeAndBtn.onclick = () => setMatchMode(true);
+
+// Limpiar filtros función completa
+function resetAllFilters() {
+  state.q = ''; state.juego = ''; state.tipo = ''; state.creador = ''; state.chips.clear(); state.onlyFavs = false;
   searchInput.value = ''; searchClear.style.display = 'none';
   document.getElementById('filterJuego').value = '';
   document.getElementById('filterTipo').value = '';
+  document.getElementById('filterCreador').value = '';
   favFilterBtn.classList.remove('active');
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  setMatchMode(false);
   apply();
+}
+document.getElementById('clearFiltersBtn').onclick = resetAllFilters;
+document.getElementById('clearAllBarBtn').onclick = resetAllFilters;
+document.getElementById('logoLink').onclick = e => { e.preventDefault(); resetAllFilters(); };
+
+// Manejo del Cajón Lateral (Drawer)
+const drawerOverlay = document.getElementById('drawerOverlay');
+const filterDrawer = document.getElementById('filterDrawer');
+const openDrawerBtn = document.getElementById('openDrawerBtn');
+const drawerClose = document.getElementById('drawerClose');
+const applyDrawerBtn = document.getElementById('applyDrawerBtn');
+const barDrawerLink = document.getElementById('barDrawerLink');
+
+function openDrawer() {
+  drawerOverlay.classList.add('open');
+  filterDrawer.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  drawerOverlay.classList.remove('open');
+  filterDrawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+openDrawerBtn.onclick = openDrawer;
+barDrawerLink.onclick = openDrawer;
+drawerClose.onclick = closeDrawer;
+drawerOverlay.onclick = closeDrawer;
+applyDrawerBtn.onclick = () => {
+  closeDrawer();
+  apply(true);
 };
 
 // Alternar Vista Cuadrícula / Lista
@@ -700,11 +1185,73 @@ viewToggleBtn.onclick = () => {
   apply(false);
 };
 
+// Actualizar barra de filtros activos y badges
+function updateActiveFiltersBar() {
+  const container = document.getElementById('activeTagsContainer');
+  const bar = document.getElementById('activeFiltersBar');
+  const badge = document.getElementById('activeFilterBadge');
+  container.innerHTML = '';
+
+  let count = 0;
+  function addTag(label, removeFn) {
+    count++;
+    const tag = document.createElement('div');
+    tag.className = 'active-tag';
+    tag.innerHTML = `<span>${label}</span><span class="tag-x">✕</span>`;
+    tag.onclick = removeFn;
+    container.appendChild(tag);
+  }
+
+  if (state.onlyFavs) {
+    addTag('⭐ Solo Favoritos', () => { state.onlyFavs = false; favFilterBtn.classList.remove('active'); apply(); });
+  }
+  if (state.juego) {
+    addTag(`Juego: ${state.juego}`, () => { state.juego = ''; document.getElementById('filterJuego').value = ''; apply(); });
+  }
+  if (state.tipo) {
+    addTag(`Tipo: ${state.tipo}`, () => { state.tipo = ''; document.getElementById('filterTipo').value = ''; apply(); });
+  }
+  if (state.creador) {
+    addTag(`Creador: ${state.creador}`, () => { state.creador = ''; document.getElementById('filterCreador').value = ''; apply(); });
+  }
+  if (state.chips.size > 0) {
+    state.chips.forEach(c => {
+      addTag(`${CATS[c]?.emoji || ''} ${CATS[c]?.nombre || c}`, () => {
+        state.chips.delete(c);
+        const chipEl = document.querySelector(`.chip[data-cat="${c}"]`);
+        if (chipEl) chipEl.classList.remove('active');
+        apply();
+      });
+    });
+  }
+  if (state.q) {
+    addTag(`Búsqueda: "${state.q}"`, () => {
+      state.q = ''; searchInput.value = ''; searchClear.style.display = 'none'; apply();
+    });
+  }
+
+  if (count > 0) {
+    bar.classList.add('visible');
+    badge.style.display = 'inline-block';
+    badge.textContent = count;
+    openDrawerBtn.classList.add('has-active');
+  } else {
+    bar.classList.remove('visible');
+    badge.style.display = 'none';
+    openDrawerBtn.classList.remove('has-active');
+  }
+}
+
 // Coincidencia de filtros
 function matches(b) {
   if (state.onlyFavs && !favorites.has(b.nombre)) return false;
   if (state.juego && b.juego !== state.juego) return false;
   if (state.tipo && b.tipo !== state.tipo) return false;
+  if (state.creador) {
+    const crNorm = norm(state.creador);
+    const crHay = norm([b.creador, b.autoria, b.autor_disc].join(' '));
+    if (!crHay.includes(crNorm)) return false;
+  }
   if (state.chips.size) {
     const has = c => (b.cats || []).includes(c);
     const ok = state.matchAll ? [...state.chips].every(has) : [...state.chips].some(has);
@@ -716,10 +1263,26 @@ function matches(b) {
       b.nombre, b.autoria, b.creador, b.colab, b.autor_disc,
       (b.cont || []).map(c => c.detalle).join(' ')
     ].join(' '));
-    // Todos los tokens deben coincidir
     if (!qTokens.every(tok => hay.includes(tok))) return false;
   }
   return true;
+}
+
+// Búsqueda de coincidencia en contenido interno para resaltar snippet
+function findContentMatch(b, query) {
+  if (!query || !b.cont) return null;
+  const qNorm = norm(query);
+  for (const c of b.cont) {
+    if (c.detalle && norm(c.detalle).includes(qNorm)) {
+      // Extraer un pedazo del texto coincidente
+      const idx = norm(c.detalle).indexOf(qNorm);
+      const start = Math.max(0, idx - 18);
+      const end = Math.min(c.detalle.length, idx + query.length + 35);
+      const snippet = (start > 0 ? '…' : '') + c.detalle.slice(start, end).trim() + (end < c.detalle.length ? '…' : '');
+      return `🔍 En ${c.tipo}: ${snippet}`;
+    }
+  }
+  return null;
 }
 
 function sorted(list) {
@@ -754,6 +1317,9 @@ function renderBatch() {
       `<span class="mini-chip">${CATS[c]?.emoji || ''} ${CAT_SHORT[c] || c}</span>`
     ).join('') + ((b.cats || []).length > 5 ? `<span class="mini-chip more">+${b.cats.length - 5}</span>` : '');
 
+    const snippetMatch = state.q ? findContentMatch(b, state.q) : null;
+    const snippetHtml = snippetMatch ? `<div class="card-snippet">${esc(snippetMatch)}</div>` : '';
+
     const primary = b.thumb_canonical || b.thumb;
     const fallback = (b.thumb_canonical && b.thumb && b.thumb_canonical !== b.thumb) ? b.thumb : '';
     const onerr = fallback
@@ -769,6 +1335,7 @@ function renderBatch() {
       <div class="card-body">
         <div class="card-title">${esc(b.nombre)}</div>
         <div class="card-juego">${esc(b.juego)}</div>
+        ${snippetHtml}
         ${chipsHtml ? `<div class="card-chips">${chipsHtml}</div>` : ''}
         <div class="card-footer">Ver manual →</div>
       </div>
@@ -789,6 +1356,7 @@ function apply(resetScroll = true) {
   grid.innerHTML = '';
   renderCount = 0;
   renderBatch();
+  updateActiveFiltersBar();
   if (resetScroll) window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
@@ -797,7 +1365,6 @@ window.addEventListener('scroll', () => {
   if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 600) {
     renderBatch();
   }
-  // Botón volver arriba
   const btn = document.getElementById('scrollTopBtn');
   if (window.scrollY > 350) btn.classList.add('visible');
   else btn.classList.remove('visible');
@@ -814,10 +1381,22 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// ---- Modal ----
+// Botón "Al azar" (Inspiración D20)
+document.getElementById('randomBookBtn').onclick = () => {
+  if (!visibleList.length) {
+    showToast('No hay manuales que coincidan con los filtros actuales.');
+    return;
+  }
+  const randIndex = Math.floor(Math.random() * visibleList.length);
+  const picked = visibleList[randIndex];
+  showToast(`🎲 ¡Tirada D20! Abriendo: ${picked.nombre}`);
+  setTimeout(() => openModal(picked), 350);
+};
+
+// ---- Modal Detalle de Manual ----
 const overlay = document.getElementById('overlay');
 let currentModalBook = null;
 
@@ -828,6 +1407,20 @@ function updateModalFavBtn(nombre) {
   btn.classList.toggle('active-fav', isFav);
   btn.innerHTML = favIconSvg(isFav) + ' ' + (isFav ? 'En tus favoritos' : 'Guardar en favoritos');
 }
+
+window.filterByCreator = function(creatorName) {
+  closeModal();
+  const clean = cleanName(creatorName);
+  state.creador = clean;
+  const sel = document.getElementById('filterCreador');
+  if (sel) {
+    // Buscar si existe opción exacta o aproximada
+    let matchOpt = [...sel.options].find(o => norm(o.value) === norm(clean));
+    if (matchOpt) sel.value = matchOpt.value;
+  }
+  apply(true);
+  showToast(`Filtrando por creador: ${clean}`);
+};
 
 function openModal(b) {
   currentModalBook = b;
@@ -842,7 +1435,6 @@ function openModal(b) {
   updateModalFavBtn(b.nombre);
   document.getElementById('modalFavBtn').onclick = () => toggleFavorite(b.nombre);
 
-  // Botón compartir / enlace directo
   document.getElementById('modalShareBtn').onclick = () => {
     const slug = encodeURIComponent(b.nombre);
     const shareUrl = `${location.origin}${location.pathname}#manual=${slug}`;
@@ -853,7 +1445,6 @@ function openModal(b) {
     });
   };
 
-  // Portada
   const primary = b.thumb_canonical || b.thumb;
   const fallback = (b.thumb_canonical && b.thumb && b.thumb_canonical !== b.thumb) ? b.thumb : '';
   const onerr = fallback
@@ -863,14 +1454,23 @@ function openModal(b) {
     ? `<img class="modal-img" src="${esc(primary)}" onerror="${onerr}">`
     : `<div class="modal-img-empty">Sin portada</div>`;
 
-  // Campos
+  // Campos con botón rápido para filtrar por autor
   const fields = [
-    ['Juego', b.juego], ['Autoría', b.autoria], ['Creador', b.creador],
-    ['Colaboradores', b.colab], ['Notas', b.notas], ['Añadido por', b.autor_disc]
+    ['Juego', b.juego],
+    ['Autoría', b.autoria, true],
+    ['Creador', b.creador, true],
+    ['Colaboradores', b.colab],
+    ['Notas', b.notas],
+    ['Añadido por', b.autor_disc, true]
   ].filter(([, v]) => v && v.trim());
-  document.getElementById('modalFields').innerHTML = fields.map(([k, v]) =>
-    `<div class="field-row"><span class="k">${k}</span><span class="v">${esc(v)}</span></div>`
-  ).join('');
+
+  document.getElementById('modalFields').innerHTML = fields.map(([k, v, isAuthor]) => {
+    const cleanV = cleanName(v);
+    const quickBtn = isAuthor && cleanV.length > 2
+      ? `<a class="author-filter-link" href="javascript:void(0)" onclick="filterByCreator('${esc(cleanV)}')">Ver más de este autor →</a>`
+      : '';
+    return `<div class="field-row"><span class="k">${k}</span><span class="v">${esc(v)} ${quickBtn}</span></div>`;
+  }).join('');
 
   // Enlaces y manuales relacionados
   const extraWrap = document.getElementById('modalExtraLinksWrap');
@@ -890,7 +1490,7 @@ function openModal(b) {
     extraWrap.style.display = 'none';
   }
 
-  // Descripción con enlaces limpios
+  // Descripción
   const descWrap = document.getElementById('modalDescWrap');
   if (b.desc && b.desc.trim()) {
     descWrap.style.display = 'block';
@@ -899,7 +1499,7 @@ function openModal(b) {
     descWrap.style.display = 'none';
   }
 
-  // Contenido incluido
+  // Contenido
   const contWrap = document.getElementById('modalContWrap');
   if (b.cont && b.cont.length) {
     contWrap.style.display = 'block';
@@ -913,7 +1513,6 @@ function openModal(b) {
     contWrap.style.display = 'none';
   }
 
-  // Enlace directo al manual en Nivel20
   const link = document.getElementById('modalLink');
   if (b.url) {
     link.href = b.url;
@@ -925,7 +1524,6 @@ function openModal(b) {
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // Actualizar hash para compartir
   try {
     history.replaceState(null, '', `#manual=${encodeURIComponent(b.nombre)}`);
   } catch (e) {}
@@ -942,7 +1540,6 @@ function closeModal() {
 
 document.getElementById('modalClose').onclick = closeModal;
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // Función para abrir un libro por su nombre interno
 window.openByTargetName = function(targetName) {
@@ -954,6 +1551,121 @@ window.openByTargetName = function(targetName) {
     window.open(`https://nivel20.com/search?q=${encodeURIComponent(targetName)}`, '_blank');
   }
 };
+
+// ---- Modal Guía y Versiones ----
+const guideOverlay = document.getElementById('guideOverlay');
+const openGuideBtn = document.getElementById('openGuideBtn');
+const guideClose = document.getElementById('guideClose');
+const tabGuideBtn = document.getElementById('tabGuideBtn');
+const tabChangelogBtn = document.getElementById('tabChangelogBtn');
+const tabGuideContent = document.getElementById('tabGuideContent');
+const tabChangelogContent = document.getElementById('tabChangelogContent');
+
+openGuideBtn.onclick = () => {
+  guideOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+guideClose.onclick = () => {
+  guideOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+};
+guideOverlay.onclick = e => {
+  if (e.target === guideOverlay) {
+    guideOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+};
+tabGuideBtn.onclick = () => {
+  tabGuideBtn.classList.add('active');
+  tabChangelogBtn.classList.remove('active');
+  tabGuideContent.style.display = 'block';
+  tabChangelogContent.style.display = 'none';
+};
+tabChangelogBtn.onclick = () => {
+  tabChangelogBtn.classList.add('active');
+  tabGuideBtn.classList.remove('active');
+  tabChangelogContent.style.display = 'block';
+  tabGuideContent.style.display = 'none';
+};
+
+// ---- Modal Estadísticas ----
+const statsOverlay = document.getElementById('statsOverlay');
+const openStatsBtn = document.getElementById('openStatsBtn');
+const statsClose = document.getElementById('statsClose');
+
+openStatsBtn.onclick = () => {
+  renderStats();
+  statsOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+statsClose.onclick = () => {
+  statsOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+};
+statsOverlay.onclick = e => {
+  if (e.target === statsOverlay) {
+    statsOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+};
+
+function renderStats() {
+  if (!BOOKS || !BOOKS.length) return;
+  document.getElementById('statTotalBooks').textContent = BOOKS.length;
+  document.getElementById('statTotalFavs').textContent = favorites.size;
+
+  let monsters = 0, spells = 0;
+  const gamesMap = {}, typesMap = {}, creatorsMap = {};
+
+  BOOKS.forEach(b => {
+    gamesMap[b.juego] = (gamesMap[b.juego] || 0) + 1;
+    typesMap[b.tipo] = (typesMap[b.tipo] || 0) + 1;
+    const cr = cleanName(b.creador || b.autoria || 'Desconocido');
+    if (cr && cr.length > 2) creatorsMap[cr] = (creatorsMap[cr] || 0) + 1;
+
+    (b.cont || []).forEach(c => {
+      const t = (c.tipo || '').toLowerCase();
+      if (t.includes('bestiario') || t.includes('monstruo')) monsters += c.cant;
+      if (t.includes('conjuro') || t.includes('hechizo')) spells += c.cant;
+    });
+  });
+
+  document.getElementById('statTotalMonsters').textContent = monsters.toLocaleString('es-ES');
+  document.getElementById('statTotalSpells').textContent = spells.toLocaleString('es-ES');
+
+  function makeBars(map, containerId, isBlue = false) {
+    const entries = Object.entries(map).sort((a,b) => b[1] - a[1]);
+    const max = entries[0] ? entries[0][1] : 1;
+    const cont = document.getElementById(containerId);
+    if (!cont) return;
+    cont.innerHTML = entries.slice(0, 6).map(([name, count]) => {
+      const pct = Math.round((count / max) * 100);
+      return `
+        <div class="stat-bar-row">
+          <span class="stat-bar-name" title="${esc(name)}">${esc(name)}</span>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill ${isBlue ? 'blue' : ''}" style="width:${pct}%"></div>
+          </div>
+          <span class="stat-bar-count">${count}</span>
+        </div>`;
+    }).join('');
+  }
+
+  makeBars(gamesMap, 'statGamesBars');
+  makeBars(typesMap, 'statTypesBars', true);
+  makeBars(creatorsMap, 'statCreatorsBars');
+}
+
+// Tecla Escape para cerrar cualquier modal abierto
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    guideOverlay.classList.remove('open');
+    statsOverlay.classList.remove('open');
+    closeDrawer();
+    document.body.style.overflow = '';
+  }
+});
 
 // Deep linking al cargar página (#manual=...)
 function checkDeepLink() {

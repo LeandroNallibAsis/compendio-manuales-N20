@@ -4,15 +4,21 @@ Un catálogo web interactivo y ultrarrápido diseñado para indexar y buscar man
 
 ## 🌟 Características Principales
 
-*   **Búsqueda en tiempo real por términos:** Encuentra cualquier manual instantáneamente buscando por múltiples palabras en su título, autor o contenido con debounce fluido.
-*   **Filtros Avanzados:** 
+*   **Búsqueda en tiempo real por términos:** Encuentra cualquier manual instantáneamente buscando por múltiples palabras en su título, creador, autor en Discord o contenido interno con resaltado visual de coincidencias.
+*   **Cajón Lateral de Filtros (Drawer Retráctil):**
     *   Filtra por **Sistema de Juego** (D&D 5e, D&D 2024, D&D 3.5, Pathfinder 2e, El Resurgir del Dragón).
-    *   Filtra por **Tipo de Contenido** (Oficial, Homebrew / Fanmade, Campañas, Playtest, etc.).
-    *   Filtro interactivo por **Contenido Incluido** (chips con conteos para Clases, Arquetipos, Razas, Subrazas, Trasfondos, Dotes, Conjuros, Bestiario, Equipo, Rasgos) y modo de combinación (cualquiera / todos).
+    *   Filtra por **Tipo de Contenido** (Oficial, Homebrew / Fanmade, Campañas, Playtest, Terceros).
+    *   Filtro dinámico por **Creador / Autor** (Wizards of the Coast, Dungeon20, etc.).
+    *   Filtro interactivo por **Contenido Incluido** (chips con conteos para Clases, Arquetipos, Razas, Subrazas, Trasfondos, Dotes, Conjuros, Bestiario, Equipo, Rasgos).
+    *   **Selector Intuitivo de Combinación:** Alterna claramente entre `Al menos uno (OR)` y `Todos (AND)` con asistencia explicativa.
     *   Filtro de **⭐ Favoritos** con persistencia en el navegador (`localStorage`).
-    *   Opciones de **Ordenación** (orden original, alfabético A–Z o por mayor contenido).
+    *   Barra minimalista de **Filtros Activos** con etiquetas descartables.
+*   **🎲 Inspiración D20 (Manual al Azar):** Botón para abrir una recomendación aleatoria entre los manuales filtrados.
+*   **📖 Guía Interactiva y Notas de Versión:** Modal completo con manual de uso y registro histórico detallado de cambios (versión, fecha, título y descripción).
+*   **📊 Dashboard de Estadísticas:** Analítica en tiempo real del compendio (total de libros, monstruos, conjuros, distribución por sistemas y creadores).
 *   **Tarjetas y Modal Mejorado:**
-    *   **Enlaces y Manuales Relacionados:** Enlaces interactivos dentro del modal que conectan directamente con otros suplementos del compendio y reglas opcionales.
+    *   **Enlaces y Manuales Relacionados:** Enlaces interactivos que conectan directamente con otros suplementos del compendio.
+    *   **Filtro Rápido por Autor:** Botón en la ficha para explorar al instante todos los libros de ese autor.
     *   **Insignias de Estado:** Detección visual de manuales en desarrollo (`🚧 En Construcción / WIP`).
     *   **Compartir / Deep Linking:** Botón para copiar enlace directo a cualquier manual (`#manual=...`).
 *   **Vistas Flexibles y Rendimiento:**
