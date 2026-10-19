@@ -152,13 +152,22 @@
 
   .card-fav-btn {
     position: absolute; top: 8px; right: 8px; z-index: 10;
-    background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 50%; width: 28px; height: 28px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; font-size: 14px;
-    color: #888; transition: all 0.15s ease;
+    background: rgba(0, 0, 0, 0.55); border: 1.5px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; backdrop-filter: blur(3px);
   }
-  .card-fav-btn:hover { transform: scale(1.15); background: rgba(0,0,0,0.9); color: #fff; }
-  .card-fav-btn.active { color: var(--gold); border-color: var(--gold); background: rgba(20,20,20,0.85); }
+  .card-fav-btn:hover {
+    transform: scale(1.15); background: rgba(0, 0, 0, 0.85); border-color: #ffffff;
+  }
+  .card-fav-btn.active {
+    background: #1c1504; border: 2px solid #f5a623;
+    box-shadow: 0 0 10px rgba(245, 166, 35, 0.7);
+  }
+  .card-fav-btn.active:hover {
+    background: #281e06; transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(245, 166, 35, 1);
+  }
 
   .card-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
   .card-title {
@@ -245,7 +254,13 @@
     display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
   }
   .modal-btn:hover { background: #333; color: #fff; border-color: #555; }
-  .modal-btn.active-fav { color: var(--gold); border-color: var(--gold); background: rgba(245,166,35,0.12); font-weight: 600; }
+  .modal-btn.active-fav {
+    background: #f5a623; color: #111111; border-color: #f5a623;
+    font-weight: 700; box-shadow: 0 0 12px rgba(245, 166, 35, 0.5);
+  }
+  .modal-btn.active-fav:hover {
+    background: #ffb74d; color: #000; border-color: #ffb74d;
+  }
 
   .modal-body { padding: 20px 24px 28px; }
   .field-row { display: flex; gap: 8px; font-size: 13.5px; padding: 6px 0; border-bottom: 1px solid #282828; }
@@ -506,6 +521,13 @@ function toggleFavorite(nombre, e) {
   updateModalFavBtn(nombre);
 }
 
+function favIconSvg(active) {
+  if (active) {
+    return '<svg viewBox="0 0 24 24" width="16" height="16" fill="#f5a623" stroke="#d97706" stroke-width="1.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+}
+
 function updateFavBadgeCount() {
   const el = document.getElementById('favFilterCount');
   if (el) el.textContent = favorites.size;
@@ -713,7 +735,7 @@ function renderBatch() {
         ${primary ? `<img src="${esc(primary)}" alt="" loading="lazy" onerror="${onerr}">` : '<div class="noimg">Sin portada</div>'}
         <span class="badge-tipo ${badgeClass(b.tipo)}">${esc(b.tipo)}</span>
         ${wip ? '<span class="badge-wip">🚧 WIP</span>' : ''}
-        <button class="card-fav-btn ${isFav ? 'active' : ''}" title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">⭐</button>
+        <button class="card-fav-btn ${isFav ? 'active' : ''}" title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${favIconSvg(isFav)}</button>
       </div>
       <div class="card-body">
         <div class="card-title">${esc(b.nombre)}</div>
@@ -774,7 +796,7 @@ function updateModalFavBtn(nombre) {
   if (!btn || !currentModalBook || currentModalBook.nombre !== nombre) return;
   const isFav = favorites.has(nombre);
   btn.classList.toggle('active-fav', isFav);
-  btn.textContent = isFav ? '⭐ En favoritos' : '⭐ Guardar en favoritos';
+  btn.innerHTML = favIconSvg(isFav) + ' ' + (isFav ? 'En tus favoritos' : 'Guardar en favoritos');
 }
 
 function openModal(b) {
