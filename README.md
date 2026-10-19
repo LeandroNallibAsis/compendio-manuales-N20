@@ -4,14 +4,21 @@ Un catálogo web interactivo y ultrarrápido diseñado para indexar y buscar man
 
 ## 🌟 Características Principales
 
-*   **Búsqueda en tiempo real:** Encuentra cualquier manual al instante escribiendo su título, el nombre del autor o palabras clave de la descripción.
+*   **Búsqueda en tiempo real por términos:** Encuentra cualquier manual instantáneamente buscando por múltiples palabras en su título, autor o contenido con debounce fluido.
 *   **Filtros Avanzados:** 
     *   Filtra por **Sistema de Juego** (D&D 5e, D&D 2024, D&D 3.5, Pathfinder 2e, El Resurgir del Dragón).
     *   Filtra por **Tipo de Contenido** (Oficial, Homebrew / Fanmade, Campañas, Playtest, etc.).
-    *   Filtro interactivo por **Contenido Incluido** (chips con conteos para Clases, Arquetipos, Razas, Subrazas, Trasfondos, Dotes, Conjuros, Bestiario, Equipo, Rasgos) y modo de combinación.
+    *   Filtro interactivo por **Contenido Incluido** (chips con conteos para Clases, Arquetipos, Razas, Subrazas, Trasfondos, Dotes, Conjuros, Bestiario, Equipo, Rasgos) y modo de combinación (cualquiera / todos).
+    *   Filtro de **⭐ Favoritos** con persistencia en el navegador (`localStorage`).
     *   Opciones de **Ordenación** (orden original, alfabético A–Z o por mayor contenido).
-*   **Tarjetas con Etiquetas y Modal de Detalles:** Visualiza insignias con el desglose de contenido de cada manual y abre una ventana modal con enlaces directos a cada sección en Nivel20.
-*   **Zero-Dependencies:** Todo el catálogo (estilos, lógica de filtrado y la base de datos de manuales) está compilado en un único archivo `index.html` estático, lo que garantiza una velocidad de carga inmediata.
+*   **Tarjetas y Modal Mejorado:**
+    *   **Enlaces y Manuales Relacionados:** Enlaces interactivos dentro del modal que conectan directamente con otros suplementos del compendio y reglas opcionales.
+    *   **Insignias de Estado:** Detección visual de manuales en desarrollo (`🚧 En Construcción / WIP`).
+    *   **Compartir / Deep Linking:** Botón para copiar enlace directo a cualquier manual (`#manual=...`).
+*   **Vistas Flexibles y Rendimiento:**
+    *   Alterna entre vista en **Cuadrícula** con portadas grandes y **Lista compacta**.
+    *   Carga diferida (Infinite Scroll) para garantizar 60 fps y carga inmediata.
+    *   **PWA / Soporte Offline:** Instalable como aplicación web con capacidad de uso sin conexión.
 
 ## 🚀 Cómo usar
 

@@ -1,0 +1,19 @@
+{
+  "name": "Compendio de Manuales N20",
+  "short_name": "Manuales N20",
+  "description": "Catálogo interactivo de manuales, reglas y contenido homebrew de Nivel20 / Dungeon20",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ba1a1a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://nivel20.com/assets/open-graph-276f1832fef163f530040b2e168f4240d7a776a5be168565c80fb51a22ea3ea7.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
