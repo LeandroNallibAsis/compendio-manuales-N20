@@ -1,4 +1,4 @@
-const CACHE_NAME = 'n20-manuales-v1';
+const CACHE_NAME = 'n20-manuales-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,10 +7,11 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -24,12 +25,13 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Network-First para siempre servir la versión más reciente cuando hay conexión
 self.addEventListener('fetch', (event) => {
-  // Solo interceptar peticiones GET del mismo origen o de datos
   if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -37,9 +39,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => cachedResponse);
-
-      return cachedResponse || fetchPromise;
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
